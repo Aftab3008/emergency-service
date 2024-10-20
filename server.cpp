@@ -38,51 +38,46 @@ string getEmergencyNumber(const string& query) {
     return response;
 }
 
-void* handleClient(void* client_socket) {
-    int clientSock = *((int*)client_socket);
+void* handleClient(void* arg) {
+    int sock = *((int*)arg);
+    struct sockaddr_in client_addr;
+    socklen_t addr_len = sizeof(client_addr);
     char buffer[BUFFER_SIZE] = {0};
 
     while (true) {
-        // Read query from client
-        memset(buffer, 0, BUFFER_SIZE); // Clear buffer before reading
-        int bytesRead = read(clientSock, buffer, BUFFER_SIZE);
-        if (bytesRead <= 0) {
-            // Client disconnected or error
-            break;
+        // Clear the buffer before reading
+        memset(buffer, 0, BUFFER_SIZE);
+
+        // Receive query from client
+        int bytesRead = recvfrom(sock, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
+        if (bytesRead < 0) {
+            break; // Error receiving data
         }
-        
+
         string query(buffer);
         cout << "Request received: " << query << endl;
 
         // Convert query to lowercase (for case-insensitive queries)
         for (auto& c : query) c = tolower(c);
 
-        // Check if the client wants to exit
-        if (query == "exit") {
-            cout << "Client requested to exit." << endl;
-            break; // Exit the loop and close the connection
-        }
-
         // Get the emergency number based on the query (with caching)
         string response = getEmergencyNumber(query);
 
         // Send the response to the client
-        send(clientSock, response.c_str(), response.length(), 0);
+        sendto(sock, response.c_str(), response.length(), 0, (struct sockaddr*)&client_addr, addr_len);
     }
 
-    // Close the connection
-    close(clientSock);
+    close(sock);
     return nullptr;
 }
 
 int main() {
-    int serverSock, clientSock;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t clientAddrLen = sizeof(clientAddr);
+    int serverSock;
+    struct sockaddr_in serverAddr;
     pthread_t thread_id;
 
     // Create a socket
-    if ((serverSock = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    if ((serverSock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         perror("Socket creation failed");
         exit(EXIT_FAILURE);
     }
@@ -99,31 +94,10 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Listen for incoming connections
-    if (listen(serverSock, 3) < 0) {
-        perror("Listen failed");
-        close(serverSock);
-        exit(EXIT_FAILURE);
-    }
-
     cout << "Emergency server listening on port " << PORT << "..." << endl;
 
-    while (true) {
-        // Accept an incoming client connection
-        if ((clientSock = accept(serverSock, (struct sockaddr*)&clientAddr, &clientAddrLen)) < 0) {
-            perror("Client accept failed");
-            continue;
-        }
-
-        // Create a new thread to handle the client
-        if (pthread_create(&thread_id, nullptr, handleClient, &clientSock) != 0) {
-            perror("Thread creation failed");
-            close(clientSock);
-        }
-
-        // Detach the thread to handle multiple clients independently
-        pthread_detach(thread_id);
-    }
+    // Handle clients
+    handleClient((void*)&serverSock);
 
     // Close the server socket
     close(serverSock);

@@ -52,13 +52,14 @@ The server automatically starts listening for client queries on port 9090. No ad
 
    ```
    Available queries:
-    - police
-    - ambulance
-    - fire station
-    - vehicle repair
-    - food delivery
-    - blood bank
-    Enter your query or type 'exit' to stop:
+   - police
+   - ambulance
+   - fire station
+   - vehicle repair
+   - food delivery
+   - blood bank
+   Connection with server is done
+   Enter your query or type 'exit' to stop:
    ```
 
 2. Enter a string to query the corresponding emergency service.

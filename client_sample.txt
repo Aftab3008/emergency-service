@@ -5,5 +5,6 @@ Available queries:
 - vehicle repair
 - food delivery
 - blood bank
+Connection with server is done
 Enter your query or type 'exit' to stop: police
 Emergency service: Police Station: 100
