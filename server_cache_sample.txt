@@ -1,0 +1,7 @@
+Emergency server listening on port 9090...
+Request received: police
+Request received: police
+Cache Hit
+Request received: ambulance
+Request received: police
+Cache Hit
