@@ -93,8 +93,10 @@ The server implements a caching mechanism using an `unordered_map` to store prev
 
 ### Benefits of Caching:
 
-- **Reduced Latency**: Cached responses can be returned quickly without processing overhead for repeated queries.
-- **Lower Resource Consumption**: Reduces the need for repeated calculations and resource utilization, allowing the server to handle more clients efficiently.
+- **Reduced Latency**: Cached responses can be returned quickly without processing overhead for repeated queries, leading to faster response times for users.
+- **Lower Resource Consumption**: Caching reduces the need for repeated calculations and resource utilization, allowing the server to handle more clients efficiently. This efficiency can lead to cost savings, especially in cloud environments where resource usage directly impacts expenses.
+- **Easy Revalidation**: Cached data can be easily revalidated whenever there are updates or changes to the underlying information, ensuring that clients receive the most accurate and up-to-date responses without the need for extensive server downtime or reconfiguration.
+- **Enhanced Scalability**: With caching in place, the server can handle a larger number of concurrent requests, making it easier to scale the application as user demand grows without a significant increase in resource allocation.
 
 ## Security Note
 
