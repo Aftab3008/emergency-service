@@ -8,7 +8,7 @@ The Emergency Service System is a UDP-based client-server application designed t
 
 - UDP-based communication for fast, lightweight queries
 - Server supports multiple concurrent clients
-- Client-side caching to reduce network load and improve response times
+- **Server-side caching** to reduce response times for frequently requested emergency services
 - Broadcast messaging for easy server discovery
 - Support for multiple emergency services (Police, Ambulance, Fire, Vehicle Repair, Food Delivery, Blood Bank)
 
@@ -44,7 +44,7 @@ g++ -std=c++11 client.cpp -o client
 
 ### Server
 
-The server automatically starts listening for client queries on port 8080. No additional input is required.
+The server automatically starts listening for client queries on port 9090. No additional input is required.
 
 ### Client
 
